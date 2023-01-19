@@ -177,6 +177,14 @@ public class GameManager : MonoBehaviour
 
     public void RearraingeLetters()
     {
-
+        ShuffleList(letterBoxes);
+        for (int i = 0; i < letterBoxes.Count; i++)
+        {
+            letterBoxes[i].gameObject.GetComponent<LetterBox>().moving = false;
+            letterBoxes[i].GetComponent<LetterBox>().clickable = true;
+            letterBoxes[i].gameObject.transform.SetSiblingIndex(i);
+        }
+        letterCounter = 0;
+        playerTry.Clear();
     }
 }
