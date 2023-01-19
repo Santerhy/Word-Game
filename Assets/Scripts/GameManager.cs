@@ -2,6 +2,7 @@ using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -13,6 +14,7 @@ public class GameManager : MonoBehaviour
     public int currentWordCounter;
     public GameObject letterBoxPrefab;
     public GameObject fillAreaPrefab;
+    public TMP_Text hintText;
     public Transform fillAreaStart;
     public List<Transform> fillArea;
     public List<GameObject> letterBoxes = new List<GameObject>();
@@ -157,5 +159,11 @@ public class GameManager : MonoBehaviour
         }
         string result = correctOrder ? "Right order" : "Incorrect order";
         Debug.Log(result);
+    }
+
+    public void ShowHint()
+    {
+        hintText.gameObject.SetActive(true);
+        hintText.text = wordList.words[currentWordCounter].hint;
     }
 }

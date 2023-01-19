@@ -287,6 +287,6 @@ MonoBehaviour:
   moving: 0
   gameManager: {fileID: 0}
   textField: {fileID: 5028772586912940085}
-  moveSpeed: 3
+  moveSpeed: 5
   startPos: {x: 0, y: 0}
   targetPos: {x: 0, y: 0}
