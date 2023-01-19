@@ -7,6 +7,14 @@
         {
             "letters": "ilta",
             "hint": "päivän loppu"
+        },
+        {
+            "letters": "keskiviikko",
+            "hint": "keskimmäinen päivä"
+        },
+        {
+            "letters": "mo",
+            "hint": "tervehdys"
         }
     ]
 }

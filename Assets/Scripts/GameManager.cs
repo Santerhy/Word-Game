@@ -5,6 +5,7 @@ using System.IO;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -15,8 +16,9 @@ public class GameManager : MonoBehaviour
     public GameObject letterBoxPrefab;
     public GameObject fillAreaPrefab;
     public TMP_Text hintText;
-    public Transform fillAreaStart;
-    public List<Transform> fillArea;
+    public GameObject fillAreaParent;
+    public List<GameObject> fillArea;
+    public GameObject letterArea;
     public List<GameObject> letterBoxes = new List<GameObject>();
     public Canvas canvas;
     public int letterCounter = 0;
@@ -46,6 +48,8 @@ public class GameManager : MonoBehaviour
         //wordList = JsonUtility.FromJson<WordList>(content);
         wordList = JsonConvert.DeserializeObject<WordList>(content);
 
+        currentWordCounter = Random.Range(0, wordList.words.Length);
+
         ApplyRightAnswer();
         GenerateWordObjects();
         GenerateFillArea();
@@ -56,40 +60,40 @@ public class GameManager : MonoBehaviour
         Debug.Log("size " + wordList.words.Length);
         //For each letter in the word, instantiate new letterBox with letter
 
+        //If letter count is more than 7, make images smaller
+
+
         for (int i = 0; i < wordList.words[currentWordCounter].letters.Length; i++)
         {
             GameObject g = Instantiate(letterBoxPrefab);
             g.GetComponent<LetterBox>().textField.text = wordList.words[currentWordCounter].letters[i].ToString();
             g.GetComponent<LetterBox>().value = wordList.words[currentWordCounter].letters[i];
             g.GetComponent<LetterBox>().gameManager = this;
-            g.transform.SetParent(canvas.transform, false);
+            //g.transform.SetParent(letterArea.transform, false);
             letterBoxes.Add(g);
         }
+
         //Shuffle letters order
         ShuffleList(letterBoxes);
 
-        //Place letters
-        for(int i = 0; i < letterBoxes.Count; i++)
-        {
-            Vector2 pos = letterBoxes[i].transform.position;
-            pos.x += i * 100f;
-            letterBoxes[i].transform.position = pos;
-        }
+        foreach (GameObject g in letterBoxes)
+            g.transform.SetParent(letterArea.transform, false);
+
     }
 
     public void GenerateFillArea()
     {
         //Replace with randomly chosen word
         int wordCount = wordList.words[currentWordCounter].letters.Length;
-        Vector2 startPos = fillAreaStart.transform.position;
+        //Vector2 startPos = fillAreaStart.transform.position;
 
-        for (int i = 1; i < wordCount; i++)
+        for (int i = 0; i < wordCount; i++)
         {
             GameObject g = Instantiate(fillAreaPrefab);
-            startPos.x += 105f;
-            g.transform.position = startPos;
-            fillArea.Add(g.transform);
-            g.transform.SetParent(canvas.transform);
+            //startPos.x += 105f;
+            //g.transform.position = startPos;
+            g.transform.SetParent(fillAreaParent.transform, false);
+            fillArea.Add(g);
         }
     }
 
@@ -127,7 +131,7 @@ public class GameManager : MonoBehaviour
 
     public Vector2 LetterClicked(GameObject go)
     {
-            Vector2 retVal = fillArea[letterCounter].position;
+            Vector2 retVal = fillArea[letterCounter].transform.position;
             letterCounter++;
             playerTry.Add(go.GetComponent<LetterBox>().value);
 
@@ -141,12 +145,16 @@ public class GameManager : MonoBehaviour
     {
         letterCounter = 0;
         playerTry.Clear();
+        
         foreach (GameObject g in letterBoxes)
         {
             g.GetComponent<LetterBox>().ResetPosition();
             g.GetComponent<LetterBox>().clickable = true;
             g.GetComponent<LetterBox>().moving = false;
         }
+        letterArea.GetComponent<GridLayoutGroup>().enabled = false;
+        letterArea.GetComponent<GridLayoutGroup>().enabled = true;
+
     }
 
     public void CheckLetterOrder()
@@ -165,5 +173,10 @@ public class GameManager : MonoBehaviour
     {
         hintText.gameObject.SetActive(true);
         hintText.text = wordList.words[currentWordCounter].hint;
+    }
+
+    public void RearraingeLetters()
+    {
+
     }
 }
